@@ -8,6 +8,48 @@ menuInicio(){
 
 }
 
+#ValidarMatricula(){
+#    read mat
+#    if [ $mat = "ABC-123" ]; then
+#        echo "Matricula valida"
+#    else
+#        echo "Matricula invalida"
+#
+#    fi
+    #if [ $matricula = "ABC123" ]; then
+    #    echo "Matricula valida"
+    #else
+    #    echo "Matricula invalida"
+    #fi
+#}
+
+
+RegistrarMatricula(){
+    echo "Ingrese la matricula"
+    read matricula
+    #https://es.stackoverflow.com/questions/255732/ayuda-con-expresion-regular-para-validar-matriculas-de-coche
+    if [ $matricula = ^[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{3}-[0-9]{4} ]; then
+        echo "La matricula es valida"
+        echo "Ingrese la cédula del responsable"
+        read cedula
+        if [ValidarCedula 'cedula' ]; then
+            echo "La cedula es valida"
+            echo "Ingrese fecha de vencimiento (YYYY-MM-DD)"
+            read fechaVenc
+            echo "$matricula | $cedula | $fechaVenc" >>matriculas.txt
+            echo "Operacion exitosa"
+
+        else 
+            echo "Cedula invalida"
+            exit
+        fi
+    else
+        echo "La matricula no es valida"
+        exit
+    fi
+    menuInicio
+}
+
 
 echo "Seguros ConductORT"
 menuInicio
@@ -27,28 +69,3 @@ else
     echo "No es una opcion no valida"
 fi
 
-ValidarMatricula(){
-  
-    if [ $1 = "ABC-123" ]; then
-        echo "Matricula valida"
-    else
-        echo "Matricula invalida"
-    fi
-}
-    if [ $matricula = "ABC123" ]; then
-        echo "Matricula valida"
-    else
-        echo "Matricula invalida"
-    fi
-}
-
-RegistrarMatricula(){
-    echo "Ingrese la matricula"
-    read matricula
-    if [[ ValidarMatricula 'matricula' ]]; then
-        echo "La matricula es valida"
-    else
-        echo "La matricula no es valida"
-    fi
-
-}
