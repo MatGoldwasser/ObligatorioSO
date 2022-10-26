@@ -2,15 +2,15 @@ registrarMatricula(){
     #si el usuario entra a esta opcion sin permisos de escritura se debe notificar que la operación no será guardada
     echo "Ingrese la matricula"
     read matricula
-    echo "mat:$matricula"
     if [[ "$matricula" =~ ^[S]{1}[A-Z]{2}(-)[0-9]{4}$ ]]; then
+        echo "Matricula Válida"
         echo "Ingrese la cédula del responsable"
         read cedula
         if [[ "$cedula" =~ ^[0-9]{1}(.)[0-9]{3}(.)[0-9]{3}(-)[0-9]{1}$ ]]; then
             echo "La cedula es válida"
             echo "Ingrese fecha de vencimiento (YYYY-MM-DD)"
             read fechaVenc
-            if [ "'date '+%Y-%m-%d' -d $fechaVen 2>/dev/null'" = "$fechaVen" ]; then
+            if [[ "$fechaVenc" == $(date -d "$fechaVenc" "+%Y%m%d" 2>/dev/null) ]]; then
                 echo "$matricula | $cedula | $fechaVenc" >> matriculas.txt
                 echo "Operacion exitosa"
             else   
@@ -31,6 +31,7 @@ registrarMatricula(){
 #[ "$fechaVen" =~ ^[2]{1}[0]{1}[0-9]{2}(-)((0)[1-9]|(1)[0-2])((0)[1-9]|[1-2][0-9]|3[0-1])$ ]
 
 verMatriculasRegistradas(){
+    
     #if [fechaVencimiento < fechaActual]
     fecha=shell> date + "%d-%m-%Y" #fecha actual (DD/MM/YYYY)
     cat matriculas.txt
