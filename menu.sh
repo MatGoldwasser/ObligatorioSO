@@ -1,16 +1,16 @@
 registrarMatricula(){
     #si el usuario entra a esta opcion sin permisos de escritura se debe notificar que la operación no será guardada
-    echo "Ingrese la matricula"
+    echo "Ingrese la matricula (SXX-####)"
     read matricula
     if [[ "$matricula" =~ ^[S]{1}[A-Z]{2}(-)[0-9]{4}$ ]]; then
         echo "Matricula Válida"
-        echo "Ingrese la cédula del responsable"
+        echo "Ingrese la cédula del responsable (#.###.###-#)"
         read cedula
         if [[ "$cedula" =~ ^[0-9]{1}(.)[0-9]{3}(.)[0-9]{3}(-)[0-9]{1}$ ]]; then
             echo "La cedula es válida"
             echo "Ingrese fecha de vencimiento (YYYY-MM-DD)"
             read fechaVenc
-            if [[ "$fechaVenc" == $(date -d "$fechaVenc" "+%Y%m%d" 2>/dev/null) ]]; then
+            if [[ "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0-9]{2}(-)[0-3]{1}[0-9]$ ]]; then
                 echo "$matricula | $cedula | $fechaVenc" >> matriculas.txt
                 echo "Operacion exitosa"
             else   
@@ -28,13 +28,29 @@ registrarMatricula(){
     menuInicio
 }
 
-#[ "$fechaVen" =~ ^[2]{1}[0]{1}[0-9]{2}(-)((0)[1-9]|(1)[0-2])((0)[1-9]|[1-2][0-9]|3[0-1])$ ]
+
+
+
 
 verMatriculasRegistradas(){
     
-    #if [fechaVencimiento < fechaActual]
-    fecha=shell> date + "%d-%m-%Y" #fecha actual (DD/MM/YYYY)
-    cat matriculas.txt
+    today=$(date '+%Y-%m-%d')
+    if [[ -f matriculas.txt ]]; then
+        while IFS= read -r line; do
+            matricula=$(echo $line | cut -d"|" -f1)
+            cedula=$(echo $line | cut -d"|" -f2)
+            fechaVenc=$(echo $line | cut -d"|" -f3)
+            if [[ "$fechaVenc" < "$today" ]]; then     #falta terminar la comparacion de fechas que no funciona
+                echo "$matricula | $cedula | vencido"
+            else
+                echo "$matricula | $cedula | en orden"
+
+            fi
+        done < matriculas.txt
+    else
+        echo "No hay matriculas registradas"
+    fi
+    #cat matriculas.txt
 }
 
 cantMatriculas(){
