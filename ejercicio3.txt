@@ -1,0 +1,16 @@
+with Ada.Text_IO;
+use Ada.Text_IO; --Permite el acceso a las cosas de la libreria sin tener q escribir ada.
+with Ada.Integer_Text_IO;
+use Ada.Integer_Text_IO;
+
+procedure Main is
+    Resultado : Integer;
+    mensaje : string := "Ejercicio ADA";
+    cantGrua : Integer := 0;
+    cant_espera : Integer := 0; 
+begin
+
+    Put_Line (mensaje);
+    
+
+end Main;
