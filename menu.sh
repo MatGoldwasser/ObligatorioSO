@@ -35,14 +35,13 @@ registrarMatricula(){
 verMatriculasRegistradas(){
     
     today=$(date '+%Y-%m-%d')
-    probando=$(date -d '20210813' +'%Y-%m-%d')
     if [[ -f matriculas.txt ]]; then
         while IFS= read -r line; do
             matricula=$(echo $line | cut -d"|" -f1)
             cedula=$(echo $line | cut -d"|" -f2)
-            fechaVenc=$(echo $line | cut -d"|" -f3)
-            echo "$probando"
-            if [[ "$fechaVenc" -le "$today" ]]; then     #falta terminar la comparacion de fechas que no funciona
+            fechaVencAux=$(echo $line | cut -d"|" -f3)
+            fechaVenc=$(date "$fechaVencAux")
+            if [[ $fechaVenc -ge $today ]]; then     #falta terminar la comparacion de fechas que no funciona
                 echo "$matricula | $cedula | vencido"
             else
                 echo "$matricula | $cedula | en orden"
@@ -87,23 +86,25 @@ cambiarPermisoModificacion(){
     if [ $opcion = 1 ]; then
         #bloquear modificaciones
         echo "Ingrese constraseña de admin"
-        read pswd
         #modifica el permiso
-        #sudo chmod 444 matriculas.txt
+        sudo chmod 444 matriculas.txt
+
         echo "Modificación realizada correctamente"
         #se debe guardar en el log "“Se cambió permiso de modificación a ..."
-
+        echo "Me cambio permiso de modificacion a solo lectura" >> log.txt
+    
     elif [ $opcion = 2 ]; then
         #permitir modificaciones
         echo "Ingrese constraseña de admin"
-        read pswd
         #modifica el permiso
-        #sudo chmod 666 matriculas.txt
+        sudo chmod 666 matriculas.txt
+
         echo "Modificación realizada correctamente"
         #se debe guardar en el log "“Se cambió permiso de modificación a ..."
-
+        echo "Me cambio permiso de modificacion a lectura y escritura" >> log.txt
+    
     else
-        echo "No es una opción válida"
+        echo "No es una opcion no valida"
     fi
 
 }
