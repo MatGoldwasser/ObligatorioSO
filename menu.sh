@@ -11,7 +11,7 @@ registrarMatricula(){
             echo "Ingrese fecha de vencimiento (YYYY-MM-DD)"
             read fechaVenc
             if [[ "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0-9]{2}(-)[0-3]{1}[0-9]$ ]]; then
-                echo "$matricula | $cedula | $fechaVenc" >> matriculas.txt
+                echo "$matricula|$cedula|$fechaVenc" >> matriculas.txt
                 echo "Operacion exitosa"
             else   
                 echo "fecha inválida"
@@ -39,8 +39,9 @@ verMatriculasRegistradas(){
         while IFS= read -r line; do
             matricula=$(echo $line | cut -d"|" -f1)
             cedula=$(echo $line | cut -d"|" -f2)
-            fechaVenc=$(echo $line | cut -d"|" -f3)
-            if [[ "$fechaVenc" < "$today" ]]; then     #falta terminar la comparacion de fechas que no funciona
+            fechaVencAux=$(echo $line | cut -d"|" -f3)
+            fechaVenc=$(date "$fechaVencAux")
+            if [[ $fechaVenc -ge $today ]]; then     #falta terminar la comparacion de fechas que no funciona
                 echo "$matricula | $cedula | vencido"
             else
                 echo "$matricula | $cedula | en orden"
@@ -53,19 +54,24 @@ verMatriculasRegistradas(){
     #cat matriculas.txt
 }
 
-cantMatriculas(){
-    cant=0
-    #Buscar la cedula del usuario en el archivo usando la cedula como $1 (parámetro 1)
-    #Por cada vez que aparezca el usuario sumarle uno a cant
-    #echo "<matricula asociada a la cedula>"
-}
 
 buscarMatriculasPorUsuario(){
     echo "Ingrese cédula a buscar"
     read cedula
-    cant=$(cantMatriculas $cedula)
-    echo "Hay $cant matriculas asociadas al usuario"
-    #Guardar la cedula consultada en el log
+    contador=0
+    #buscar cedula en matriculas.txt y devolver la matricula asociada
+    if [[ -f matriculas.txt ]]; then
+        while IFS= read -r line; do
+            matricula=$(echo $line | cut -d "|" -f1)
+            ced=$(echo $line | cut -d "|" -f2)
+            if [[ "$cedula" == "$ced" ]]; then
+                echo "$matricula"
+                contador=$((contador+1))
+            fi
+        done < matriculas.txt
+    fi
+    echo "Hay $contador matriculas asociadas al usuario"
+    
 
     #funciones con parámetros https://linuxcenter.es/component/k2/item/65-parametros-en-shell-scripts-y-funciones 
 }
@@ -80,23 +86,25 @@ cambiarPermisoModificacion(){
     if [ $opcion = 1 ]; then
         #bloquear modificaciones
         echo "Ingrese constraseña de admin"
-        read pswd
         #modifica el permiso
-        #sudo chmod 444 matriculas.txt
+        sudo chmod 444 matriculas.txt
+
         echo "Modificación realizada correctamente"
         #se debe guardar en el log "“Se cambió permiso de modificación a ..."
-
+        echo "Me cambio permiso de modificacion a solo lectura" >> log.txt
+    
     elif [ $opcion = 2 ]; then
         #permitir modificaciones
         echo "Ingrese constraseña de admin"
-        read pswd
         #modifica el permiso
-        #sudo chmod 666 matriculas.txt
+        sudo chmod 666 matriculas.txt
+
         echo "Modificación realizada correctamente"
         #se debe guardar en el log "“Se cambió permiso de modificación a ..."
-
+        echo "Me cambio permiso de modificacion a lectura y escritura" >> log.txt
+    
     else
-        echo "No es una opción válida"
+        echo "No es una opcion no valida"
     fi
 
 }
