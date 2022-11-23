@@ -10,13 +10,18 @@ registrarMatricula(){
             echo "La cedula es válida"
             echo "Ingrese fecha de vencimiento (YYYY-MM-DD)"
             read fechaVenc
-            if [[ "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0-9]{2}(-)[0-3]{1}[0-9]$ ]]; then
+            if [[ "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0]{1}[1-9]{1}(-)[1-2]{1}[0-9]{1}$ 
+            || "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0]{1}[1-9]{1}(-)[0]{1}[1-9]{1}$ 
+            || "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[0]{1}[1-9]{1}(-)[3]{1}[0-1]{1}$ 
+            || "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[1]{1}[0-2]{1}(-)[1-2]{1}[0-9]{1}$ 
+            || "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[1]{1}[0-2]{1}(-)[0]{1}[1-9]{1}$ 
+            || "$fechaVenc" =~ ^[2]{1}[0]{1}[0-9]{2}(-)[1]{1}[0-2]{1}(-)[3]{1}[0-1]{1}$  ]]; then
                 echo "$matricula|$cedula|$fechaVenc" >> matriculas.txt
                 echo "Operacion exitosa"
             else   
                 echo "fecha inválida"
             fi
-
+            
         else
             echo "Cedula inválida"
             exit
